@@ -6,13 +6,10 @@
 
 'use strict';
 
-const util = require('util');
 const _ = require("lodash");
 
 var Promise = require('bluebird');
-var admin = require('firebase-admin');
 var jsonfile = require('jsonfile');
-var delay = require('delay');
 
 const mkdirp = require("mkdirp");
 
@@ -31,9 +28,6 @@ require('dotenv').config({path: envPath});
 
 var filename = process.env.DB_FILEPATH || 'dummydata.export.json';
 // var port = process.env.FIREBASE_PORT || 3000;
-
-console.log("filename: " + filename);
-// console.log("port: " + port);
 
 const common = require('./common');
 const objectToArray = common.objectToArray;
@@ -54,6 +48,9 @@ jsonfile.writeFile(process.env.DB_BUILDDIR + "/" + filename, initData, {spaces: 
 		console.error(err);
 	}
 });
+
+console.log("filename: " + filename);
+// console.log("port: " + port);
 
 // Customer : A participant named Customer
 // Fund : An asset named Fund

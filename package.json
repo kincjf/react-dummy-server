@@ -32,18 +32,14 @@
     "babel": "5.8.23",
     "babel-eslint": "^9.0.0",
     "bluebird": "2.10.2",
-    "co": "4.6.0",
     "coveralls": "2.11.4",
-    "cross-env": "^5.1.1",
+    "cross-env": "^5.2.0",
     "dom-storage": "^2.0.2",
     "ecdsa-sig-formatter": "^1.0.9",
     "eslint": "^1.7.3",
     "eslint-config-defaults": "^9.0.0",
     "eslint-plugin-react": "^7.11.1",
     "faye-websocket": "0.10.0",
-    "firebase": "^4.5.2",
-    "firebase-server": "^0.12.0",
-    "firebase-token-generator": "^2.0.0",
     "istanbul": "0.4.0",
     "mkdirp": "^0.5.1",
     "mocha": "2.3.3",
@@ -57,7 +53,6 @@
     "debug": "2.2.0",
     "delay": "^3.0.0",
     "dotenv": "^4.0.0",
-    "firebase-admin": "^5.12.1",
     "jsonfile": "^4.0.0",
     "jsonwebtoken": "^8.1.0",
     "jwt-simple": "0.3.1",
@@ -65,7 +60,6 @@
     "moment": "^2.19.1",
     "request": "^2.88.0",
     "request-promise": "^4.2.2",
-    "targaryen": "3.0.1",
-    "ws": "1.1.1"
+    "targaryen": "3.0.1"
   }
 }

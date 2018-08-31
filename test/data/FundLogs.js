@@ -1,348 +1,94 @@
 "use strict";
 
-let _ = require("lodash");
-let userData = require("./user");
-let itemData = require("./item");
-var crypto = require("crypto");
+const _ = require("lodash");
+const moment = require("moment");
 
-var weaponKeyList = Object.keys(itemData.weapon);
-var armorKeyList = Object.keys(itemData.armor);
-var accessoryKeyList = Object.keys(itemData.accessory);
-var groceriesKeyList = Object.keys(itemData.groceries);
+// let customerData = require("./Customer");
+let fundData = require("./Fund");
+let guildData = require("./Guild");
 
-let tengableItemData = {
-	"weapon": itemData.weapon,
-	"armor": itemData.armor,
-	"accessory": itemData.accessory,
-	"groceries": itemData.groceries
-}
+/**
+ * FundLogs에서 기록-추적해야하는 로그
+ * 1. 길드의 펀드 가입일(X, fund[n].startedAt에 있음)
+ * 2. 월별, 주별, 일별 요청 기록 => 일단 일별로 작성함
+ *    요청 종류: 출자금 증액 / 지출, (정기)수익지급  
+ * 3. 모임금 수익은 임의로 입력함
+ */
 
-let wearableItemData = {
-	"weapon": itemData.weapon,
-	"armor": itemData.armor,
-	"accessory": itemData.accessory
-}
-
-// user 수만큼 있음
-var data = {
-	// "smadupset@naver": {
-		// "level": 2,
-		// "exp": 265,
-		// "ruby": 27,
-		// "gold": 934,
-		// "inventory": {
-			// "c4ca4238a0b923820dcc509a6f75849b": {
-				// "category": "Lorem",
-				// "type": "Lorem",
-				// "name": "Lorem",
-				// "property": {
-					// "hp": -46,
-					// "defence": -34,
-					// "attackPower": 94,
-					// "agility": -32
-				// }
-			// },
-			// "c81e728d9d4c2f636f067f89cc14862c": {
-				// "name": "Lorem",
-				// "category": "Lorem",
-				// "type": "Lorem",
-				// "property": {
-					// "hp": -46,
-					// "defence": -34,
-					// "attackPower": 94,
-					// "agility": -32
-				// }
-			// },
-			// "eccbc87e4b5ce2fe28308fd9f2a7baf3": {
-				// "name": "Lorem",
-				// "category": "Lorem",
-				// "type": "Lorem",
-				// "property": {
-					// "hp": -46,
-					// "defence": -34,
-					// "attackPower": 94,
-					// "agility": -32
-				// }
-			// },
-			// "a87ff679a2f3e71d9181a67b7542122c": {
-				// "name": "Lorem",
-				// "category": "Lorem",
-				// "type": "Lorem",
-				// "property": {
-					// "hp": -46,
-					// "defence": -34,
-					// "attackPower": 94,
-					// "agility": -32
-				// }
-			// },
-			// "c4ca4238a0b923820dcc5": {
-				// "name": "Lorem",
-				// "category": "Lorem",
-				// "type": "Lorem",
-				// "property": {
-					// "hp": -46,
-					// "defence": -34,
-					// "attackPower": 94,
-					// "agility": -32
-				// }
-			// }
-		// },
-		// "equipment": {
-			// "weapon": {
-				// "inventoryUid1": {}
-			// },
-			// "armor": {
-				// "inventoryUid2": {}
-			// },
-			// "accessory": {
-				// "inventoryUid3": {}
-			// }
-		// }
-	// },
-	// "jgj90@naver": {
-		// "level": -71,
-		// "exp": -4,
-		// "ruby": -17,
-		// "gold": -75,
-		// "inventory": {
-			// "uid": {
-				// "name": "Lorem",
-				// "category": "Lorem",
-				// "type": "Lorem",
-				// "property": {
-					// "hp": -46,
-					// "defence": -34,
-					// "attackPower": 94,
-					// "agility": -32
-				// }
-			// }
-		// },
-		// "equipment": {
-			// "weapon": {
-				// "inventoryUid1": {}
-			// },
-			// "armor": {
-				// "inventoryUid2": {}
-			// },
-			// "accessory": {
-				// "inventoryUid3": {}
-			// }
-		// }
-	// },
-	// "pastelbook89@gmail": {
-		// "level": -71,
-		// "exp": -4,
-		// "ruby": -17,
-		// "gold": -75,
-		// "inventory": {
-			// "uid": {
-				// "name": "Lorem",
-				// "category": "Lorem",
-				// "type": "Lorem",
-				// "property": {
-					// "hp": -46,
-					// "defence": -34,
-					// "attackPower": 94,
-					// "agility": -32
-				// }
-			// }
-		// },
-		// "equipment": {
-			// "weapon": {
-				// "inventoryUid1": {}
-			// },
-			// "armor": {
-				// "inventoryUid2": {}
-			// },
-			// "accessory": {
-				// "inventoryUid3": {}
-			// }
-		// }
-	// },
-	// "sinho0689@gmail": {
-		// "level": -71,
-		// "exp": -4,
-		// "ruby": -17,
-		// "gold": -75,
-		// "inventory": {
-			// "uid": {
-				// "name": "Lorem",
-				// "category": "Lorem",
-				// "type": "Lorem",
-				// "property": {
-					// "hp": -46,
-					// "defence": -34,
-					// "attackPower": 94,
-					// "agility": -32
-				// }
-			// }
-		// },
-		// "equipment": {
-			// "weapon": {
-				// "inventoryUid1": {}
-			// },
-			// "armor": {
-				// "inventoryUid2": {}
-			// },
-			// "accessory": {
-				// "inventoryUid3": {}
-			// }
-		// }
-	// },
-	// "random_1487780669@gmail": {
-		// "level": -71,
-		// "exp": -4,
-		// "ruby": -17,
-		// "gold": -75,
-		// "inventory": {
-			// "uid": {
-				// "name": "Lorem",
-				// "category": "Lorem",
-				// "type": "Lorem",
-				// "property": {
-					// "hp": -46,
-					// "defence": -34,
-					// "attackPower": 94,
-					// "agility": -32
-				// }
-			// }
-		// },
-		// "equipment": {
-			// "weapon": {
-				// "inventoryUid1": {}
-			// },
-			// "armor": {
-				// "inventoryUid2": {}
-			// },
-			// "accessory": {
-				// "inventoryUid3": {}
-			// }
-		// }
+var data = [
+	// 예시 데이터, 모든 로그는 자동으로 생성됨
+	// {
+	// 	"$class": "org.hyperledger.fundnetwork.FundLogs",
+	// 	"id": "1",
+	// 	"customerIdKey": "string",
+	// 	"guildIdKey": "string",
+	// 	"fundIdKey": "string",
+	// 	"transactionMoney": "string",
+	// 	"date": "2018-08-31T15:51:30.034Z",
+	// 	"behavior": "string",
+	// 	"additionalJsonValue": "string"
 	// }
-};
+];
 
-_.forEach(userData, function(userValue, userKey) {
-	data[userKey] = {
-		"level": _.random(0, 10),
-		"exp": _.random(0, 100),
-		"ruby": _.random(0, 100),
-		"gold": _.random(0, 1000)
-	};
+let fundLogId = 0;
+let dayOfyear = 7;
+// let dayOfyear = Math.floor(365/3);
 
-	data[userKey].status = {
-		total: {
-			"eatenUser": _.random(0, 10),
-			"eatenPixel": _.random(0, 1000),
-			"score": _.random(0, 1000),
-			"playCount": _.random(0, 1000),
-			"survivalTime": _.random(0, 10000),		// second
+let day = 0;
+
+let behaviorType = ["출자금증액", "지출", "수익지급"];  // "수익발생은 별도 입력"
+// 2. FundLogs의 behavior event 발생별 소속 길드원(Customer)의 동의 여부
+// 모든 FundLog에 대해서 길드 참여자의 동의여부를 파악해야함
+_.forEach(fundData, function(fund, fundKey, fundThat) {
+	for (let i = 0; i < dayOfyear; i++) {
+		let inputDate = moment(fund.startedAt).utc().dayOfYear(day++).format();
+		let behavior = behaviorType[_.random(0,5)%3];
+
+		let guild = _.find(guildData, function(o) { return o.id === fund.guildIdKey; });
+		let customerId = _.shuffle(guild.guildMemberKeys)[0];
+		
+		if (behavior == "출자금증액") {
+		} else if (behavior == "지출") {
+			customerId = guild.guildMasterKey;
+		} else {
+			// 수익 지급
 		}
-	};
 
-	data[userKey].status.best = {
-		"ranking": _.random(0, 10),
-		"eatenUser": data[userKey].status.total.eatenUser + _.random(0, 100),
-		"eatenPixel": data[userKey].status.total.eatenPixel + _.random(0, 100),
-		"score": data[userKey].status.total.score + _.random(0, 100),
-		"playCount": data[userKey].status.total.playCount + _.random(0, 1000),
-		"survivalTime": data[userKey].status.total.survivalTime + _.random(0, 1000),		// second
+		data.push({
+			"$class": "org.hyperledger.fundnetwork.FundLogs",
+			"id": `${++fundLogId}`,
+			"customerIdKey": customerId,
+			"guildIdKey": fund.guildIdKey,
+			"fundIdKey": fund.id,  // 펀드 참여시 작성함 
+			"transactionMoney": _.random(10000, 100000000),  // 1만원~1억원
+			"date": inputDate,
+			"behavior": behavior,
+			"additionalJsonValue": ""  // 해당사항 없음
+		});
 	}
+});
 
-	// data[userKey].inventory = {};
-	// data[userKey].equipment = {
-	// 	"weapon": {
-	// 	},
-	// 	"armor": {
-	// 	},
-	// 	"accessory": {
-	// 	}
-	// };
+day = 0;
 
-	// inventory
-	// _.forEach(tengableItemData, function(itemValue, itemKey) {
-	// 	let uid = crypto.randomBytes(10).toString('hex');
-	// 	let itemObj, itemObjKey;
-  //
-	// 	switch (itemKey) {
-	// 		case "weapon":
-	// 			itemObj = tengableItemData.weapon;
-	// 			itemObjKey = weaponKeyList;
-	// 			break;
-	// 		case "armor":
-	// 			itemObj = tengableItemData.armor;
-	// 			itemObjKey = armorKeyList;
-	// 			break;
-	// 		case "accessory":
-	// 			itemObj = tengableItemData.accessory;
-	// 			itemObjKey = accessoryKeyList;
-	// 			break;
-	// 		case "groceries":
-	// 			itemObj = tengableItemData.groceries;
-	// 			itemObjKey = groceriesKeyList;
-	// 			break;
-	// 	}
-  //
-	// 	let idx = _.random(0, itemObjKey.length - 1);
-	// 	let detailValue = itemObj[itemObjKey[idx]];
-  //
-	// 	if (detailValue) {
-	// 		data[userKey].inventory[uid] = {};
-	// 		data[userKey].inventory[uid].category = itemKey
-	// 		data[userKey].inventory[uid].type = detailValue.type;
-	// 		data[userKey].inventory[uid].name = itemObjKey[idx];
-  //
-	// 		data[userKey].inventory[uid].property = {
-	// 			hp: detailValue.property.hp.min,
-	// 			attackPower: detailValue.property.attackPower.min,
-	// 			defence: detailValue.property.defence.min,
-	// 			agility: detailValue.property.agility.min
-	// 		};
-	// 	}
-	// });
-
-	// equipment
-	// _.forEach(data[userKey].equipment, function(equipValue, equipKey) {
-	// 	let uid = crypto.randomBytes(10).toString('hex');
-	// 	let itemObj, itemObjKey, partObj;
-  //
-	// 	switch (equipKey) {
-	// 		case "weapon":
-	// 			data[userKey].equipment.weapon = {};
-  //
-	// 			itemObj = wearableItemData.weapon;
-	// 			itemObjKey = weaponKeyList;
-	// 			break;
-	// 		case "armor":
-	// 			data[userKey].equipment.armor = {};
-  //
-	// 			itemObj = wearableItemData.armor;
-	// 			itemObjKey = armorKeyList;
-	// 			break;
-	// 		case "accessory":
-	// 			data[userKey].equipment.accessory = {};
-  //
-	// 			itemObj = wearableItemData.accessory;
-	// 			itemObjKey = accessoryKeyList;
-	// 			break;
-	// 	}
-  //
-	// 	let idx = _.random(0, itemObjKey.length - 1);
-	// 	let detailValue = itemObj[itemObjKey[idx]];
-  //
-	// 	if (detailValue) {
-	// 		data[userKey].equipment[equipKey][uid] = {};
-	// 		partObj = data[userKey].equipment[equipKey][uid];
-  //
-	// 		partObj.name = itemObjKey[idx];
-	// 		partObj.property = {
-	// 			hp: detailValue.property.hp.min,
-	// 			attackPower: detailValue.property.attackPower.min,
-	// 			defence: detailValue.property.defence.min,
-	// 			agility: detailValue.property.agility.min
-	// 		};
-	// 	}
-	// });
-
+// 3. 모임금 수익은 임의로 입력함
+_.forEach(fundData, function(fund, fundKey, fundThat) {
+	for (let i = 0; i < dayOfyear/3; i++) {
+		let incomePeriod = _.random(0, 3);
+		let inputDate = moment(fund.startedAt).utc().dayOfYear((day++)+incomePeriod).format();
+		let incomeMoney = _.random(10000, 10000000);    // 1만원~1천만원
+		
+		data.push({
+			"$class": "org.hyperledger.fundnetwork.FundLogs",
+			"id": `${++fundLogId}`,
+			"customerIdKey": "",  // customer와는 별 상관 없음 
+			"guildIdKey": fund.guildIdKey,
+			"fundIdKey": fund.id,  // 펀드 참여시 작성함 
+			"transactionMoney": incomeMoney,  // 1만원~1억원
+			"date": inputDate,
+			"behavior": "수익발생",
+			"additionalJsonValue": ""  // 해당사항 없음
+		});
+	}
 });
 
 module.exports = data;
