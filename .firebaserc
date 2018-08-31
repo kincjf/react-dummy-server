@@ -1,0 +1,7 @@
+{
+  "projects": {
+    "default": "pixelcity-dev",
+    "pixelcity-dev": "pixelcity-dev",
+    "pixelcity-test-alpha": "pixelcity-test1"
+  }
+}

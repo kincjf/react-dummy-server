@@ -1,0 +1,12 @@
+/.idea
+/node_modules
+*.export.json
+*.bak
+/build
+package-lock.json
+node_modules
+*.log
+/functions/test/firebase-test-config.json
+/functions/test/gcloud-pixelcity-test.json
+/.cookie
+/%RESOURCE_DIR%
